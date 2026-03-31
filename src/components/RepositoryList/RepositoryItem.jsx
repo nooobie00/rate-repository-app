@@ -1,7 +1,7 @@
 import { View, StyleSheet, Image } from "react-native";
 
-import Text from "./Text";
-import theme from "../theme";
+import Text from "../Text";
+import theme from "../../theme";
 
 const styles = StyleSheet.create({
   container: {
@@ -50,7 +50,8 @@ const RepositoryItem = ({ item }) => {
   return (
     <View style={styles.container}>
       <View style={styles.basicContainer}>
-        <Image style={styles.dp} source={require("../../assets/favicon.png")} />
+        {/* <Image style={styles.dp} source={require("../../assets/favicon.png")} /> */}
+        <Image style={styles.dp} source={{ uri: item.ownerAvatarUrl }} />
         <View style={styles.basicInfo}>
           <Text fontWeight="bold" fontSize="subheading">
             {item.fullName}

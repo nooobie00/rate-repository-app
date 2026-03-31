@@ -14,7 +14,7 @@ const theme = {
   },
   fonts: {
     main: "System",
-    android: "RobotoLight",
+    android: "Roboto",
     androidBold: "RobotoBold",
     ios: "Arial",
     iosBold: "ArialBold",
