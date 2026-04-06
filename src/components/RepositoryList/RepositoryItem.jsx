@@ -1,4 +1,5 @@
-import { View, StyleSheet, Image } from "react-native";
+import { View, StyleSheet, Image, Pressable } from "react-native";
+import * as Linking from "expo-linking";
 
 import Text from "../Text";
 import theme from "../../theme";
@@ -38,6 +39,11 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: 5,
   },
+  github: {
+    backgroundColor: theme.color.primary,
+    paddingVertical: 20,
+    borderRadius: 5,
+  },
 });
 
 const fomatNumber = (num) => {
@@ -48,7 +54,7 @@ const fomatNumber = (num) => {
 };
 const RepositoryItem = ({ item }) => {
   return (
-    <View style={styles.container}>
+    <View testID="repositoryItem" style={styles.container}>
       <View style={styles.basicContainer}>
         {/* <Image style={styles.dp} source={require("../../assets/favicon.png")} /> */}
         <Image style={styles.dp} source={{ uri: item.ownerAvatarUrl }} />
@@ -105,6 +111,17 @@ const RepositoryItem = ({ item }) => {
           <Text>Rating</Text>
         </View>
       </View>
+
+      {item.url && (
+        <Pressable
+          style={styles.github}
+          onPress={() => Linking.openURL(item.url)}
+        >
+          <Text style={styles.metricsItem} fontWeight="bold" color="light">
+            Open in GitHub
+          </Text>
+        </Pressable>
+      )}
     </View>
   );
 };

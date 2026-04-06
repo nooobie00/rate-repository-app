@@ -5,7 +5,6 @@ import Constants from "expo-constants";
 
 import { GET_USER } from "../../graphql/queries";
 import useAuthStorage from "../../hooks/useAuthStorage";
-import Text from "../Text";
 import theme from "../../theme";
 import AppBarTab from "./AppBarTab";
 
@@ -28,7 +27,7 @@ const AppBar = () => {
   const authStorage = useAuthStorage();
 
   if (loading) {
-    return <Text>loading....</Text>;
+    return null;
   }
   console.log("daata for user ", data);
   console.log("daata for user value ", data.me);
@@ -43,13 +42,12 @@ const AppBar = () => {
     <View style={styles.container}>
       <ScrollView horizontal>
         <AppBarTab route={"/"}>Repositories</AppBarTab>
+        <AppBarTab>Create a review</AppBarTab>
         {data.me ? (
-          // <Pressable onPress={signOut}>
           <AppBarTab route="#" logOut={signOut}>
             Sign out
           </AppBarTab>
         ) : (
-          // </Pressable>
           <AppBarTab route={"/signin"}>Sign in</AppBarTab>
         )}
       </ScrollView>

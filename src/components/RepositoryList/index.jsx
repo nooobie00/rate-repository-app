@@ -1,7 +1,7 @@
-import { FlatList, View, StyleSheet } from "react-native";
+import { FlatList, View, StyleSheet, Pressable } from "react-native";
+import { useNavigate } from "react-router-native";
 import useRepositories from "../../hooks/useRepositories";
 import RepositoryItem from "./RepositoryItem";
-import Text from "../Text";
 
 const styles = StyleSheet.create({
   container: {
@@ -58,24 +58,47 @@ const styles = StyleSheet.create({
 
 // const ItemSeparator = () => <View style={styles.separator} />;
 
-const RepositoryList = () => {
-  const { repositories, loading } = useRepositories();
+export const RepositoryListContainer = ({ repositories }) => {
+  // const repositoryNodes = repositories
+  //   ? repositories.edges.map((edge) => edge.node)
+  //   : [];
 
-  if (loading) {
-    console.log(" loading here");
-    return <Text>loading here</Text>;
-  }
-  console.log("aint loafing here kana");
-  console.log("repositories ", repositories);
   const repositoryNode = repositories.edges
     ? repositories.edges?.map((edge) => edge.node)
     : [];
+
   return (
     <View style={{ flex: 1 }}>
       <FlatList
         data={repositoryNode}
         // ItemSeparatorComponent={ItemSeparator}
         renderItem={({ item }) => <RepositoryItem item={item} />}
+        extraData={({ item }) => item.id}
+        contentContainerStyle={styles.container}
+      />
+    </View>
+  );
+};
+
+const RepositoryList = () => {
+  const { repositories } = useRepositories();
+  const navigate = useNavigate();
+
+  console.log("aint loafing here kana");
+  // console.log("repositories ", repositories);
+  const repositoryNode = repositories.edges
+    ? repositories.edges?.map((edge) => edge.node)
+    : [];
+  // console.log(repositoryNode);
+  return (
+    <View style={{ flex: 1 }}>
+      <FlatList
+        data={repositoryNode}
+        renderItem={({ item }) => (
+          <Pressable onPress={() => navigate(`/repositories/${item.id}`)}>
+            <RepositoryItem item={item} />
+          </Pressable>
+        )}
         extraData={({ item }) => item.id}
         contentContainerStyle={styles.container}
       />

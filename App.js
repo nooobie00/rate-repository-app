@@ -26,7 +26,9 @@ const App = () => {
   console.log("constants config", Constants.expoConfig);
   return (
     <>
-      <NativeRouter>
+      <NativeRouter
+        future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
+      >
         <ApolloProvider client={apolloClient}>
           <AuthStorageContext.Provider value={authStorage}>
             <Main />
