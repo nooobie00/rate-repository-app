@@ -1,3 +1,5 @@
+import { StyleSheet } from "react-native";
+
 const theme = {
   color: {
     primary: "#0366d6",
@@ -24,5 +26,28 @@ const theme = {
     bold: "900",
   },
 };
+
+export const Formstyles = StyleSheet.create({
+  conatiner: {
+    gap: 20,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+    backgroundColor: theme.color.light,
+  },
+  input: {
+    height: 50,
+    padding: 10,
+    borderWidth: 1,
+    borderRadius: 2,
+    borderColor: theme.color.fade,
+  },
+  button: {
+    backgroundColor: theme.color.primary,
+    paddingVertical: 15,
+    paddingHorizontal: 15,
+    alignItems: "center",
+    borderRadius: 3,
+  },
+});
 
 export default theme;

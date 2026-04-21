@@ -3,11 +3,14 @@ import { Route, Routes, Navigate } from "react-router-native";
 
 import SignIn from "./SignIn";
 import RepositoryList from "./RepositoryList";
-// import RepositoryItem from "./RepositoryList/RepositoryItem";
-// import LoadRepository from "./RepositoryList/LoadRepository";
-import SingleRepository from "./RepositoryList/SingleRepository";
+import Review from "./Review";
+import SignUp from "./SignUp";
+import SingleRepository, {
+  ReviewItem,
+} from "./RepositoryList/SingleRepository";
 import AppBar from "./AppBar";
 import theme from "../theme";
+import UserReview from "./UserReviews";
 
 const styles = StyleSheet.create({
   container: {
@@ -24,11 +27,10 @@ const Main = () => {
       <Routes>
         <Route path="/" element={<RepositoryList />} />
         <Route path="/signin" element={<SignIn />} />
+        <Route path="/signup" element={<SignUp />} />
         <Route path="/repositories/:id" element={<SingleRepository />} />
-        {/* <Route
-          path="/repositories/:id"
-          element={<RepositoryItem item={{}} />}
-        /> */}
+        <Route path="/review" element={<Review />} />
+        <Route path="/myReviews" element={<UserReview />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </View>

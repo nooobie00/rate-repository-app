@@ -1,7 +1,12 @@
 import { FlatList, View, StyleSheet, Pressable } from "react-native";
+import { Component } from "react";
+import { useDebounce } from "use-debounce";
+import { Searchbar } from "react-native-paper";
 import { useNavigate } from "react-router-native";
 import useRepositories from "../../hooks/useRepositories";
+import { Picker } from "@react-native-picker/picker";
 import RepositoryItem from "./RepositoryItem";
+import { useState } from "react";
 
 const styles = StyleSheet.create({
   container: {
@@ -58,51 +63,124 @@ const styles = StyleSheet.create({
 
 // const ItemSeparator = () => <View style={styles.separator} />;
 
-export const RepositoryListContainer = ({ repositories }) => {
-  // const repositoryNodes = repositories
-  //   ? repositories.edges.map((edge) => edge.node)
-  //   : [];
-
-  const repositoryNode = repositories.edges
-    ? repositories.edges?.map((edge) => edge.node)
-    : [];
-
+const SortPicker = ({ sort, setSort }) => {
   return (
-    <View style={{ flex: 1 }}>
-      <FlatList
-        data={repositoryNode}
-        // ItemSeparatorComponent={ItemSeparator}
-        renderItem={({ item }) => <RepositoryItem item={item} />}
-        extraData={({ item }) => item.id}
-        contentContainerStyle={styles.container}
+    <Picker
+      selectedValue={sort}
+      onValueChange={(itemValue, itemIndex) => setSort(itemValue)}
+    >
+      <Picker.Item
+        label="Sort By...."
+        enabled={false}
+        style={{ color: "gray" }}
       />
+      <Picker.Item
+        label="Latest repositories"
+        value="lp"
+        style={{ color: "black" }}
+      />
+      <Picker.Item
+        label="Highest rated repositories"
+        value="hrp"
+        style={{ color: "black" }}
+      />
+      <Picker.Item
+        label="Lowest rated repositories"
+        value="lrp"
+        style={{ color: "black" }}
+      />
+    </Picker>
+  );
+};
+
+const FilterSearch = ({ filter, setFilter }) => {
+  return (
+    <Searchbar
+      placeholder="Find Repository"
+      onChangeText={setFilter}
+      value={filter}
+    />
+  );
+};
+
+const RepositoryListHeader = ({ sort, setSort, filter, setFilter }) => {
+  return (
+    <View>
+      <FilterSearch filter={filter} setFilter={setFilter} />
+      <SortPicker sort={sort} setSort={setSort} />
     </View>
   );
 };
 
-const RepositoryList = () => {
-  const { repositories } = useRepositories();
-  const navigate = useNavigate();
+export class RepositoryListContainer extends Component {
+  RendeHeader = () => {
+    const props = this.props;
+    console.log("props  in", props);
 
-  console.log("aint loafing here kana");
-  // console.log("repositories ", repositories);
-  const repositoryNode = repositories.edges
-    ? repositories.edges?.map((edge) => edge.node)
-    : [];
-  // console.log(repositoryNode);
-  return (
-    <View style={{ flex: 1 }}>
-      <FlatList
-        data={repositoryNode}
-        renderItem={({ item }) => (
-          <Pressable onPress={() => navigate(`/repositories/${item.id}`)}>
-            <RepositoryItem item={item} />
-          </Pressable>
-        )}
-        extraData={({ item }) => item.id}
-        contentContainerStyle={styles.container}
+    return (
+      <RepositoryListHeader
+        sort={props.sort}
+        setSort={props.setSort}
+        filter={props.filter}
+        setFilter={props.setFilter}
       />
-    </View>
+    );
+  };
+
+  render() {
+    const { repositories, navigate, onEndReached } = this.props;
+    console.log("repositories render ", repositories);
+    const repositoryNodes = repositories.edges
+      ? repositories.edges?.map((edge) => edge.node)
+      : [];
+    console.log("repo ", this.props);
+    return (
+      <View style={{ flex: 1 }}>
+        <FlatList
+          data={repositoryNodes}
+          renderItem={({ item }) => (
+            <Pressable onPress={() => navigate(`/repositories/${item.id}`)}>
+              <RepositoryItem item={item} />
+            </Pressable>
+          )}
+          onEndReached={onEndReached}
+          onEndReachedThreshold={0.5}
+          ListHeaderComponent={this.RendeHeader}
+          extraData={({ item }) => item.id}
+          contentContainerStyle={styles.container}
+        />
+      </View>
+    );
+  }
+}
+
+const RepositoryList = () => {
+  const [sort, setSort] = useState("");
+  const [filter, setFilter] = useState("");
+  const [debouncedValue] = useDebounce(filter, 500);
+  const navigate = useNavigate();
+  const { repositories, fetchMore } = useRepositories({
+    sort: sort,
+    debouncedValue: debouncedValue,
+    first: 8,
+  });
+  console.log("whats arre the repo", repositories);
+  console.log("filter sort", filter, sort);
+
+  const onEndReached = () => {
+    fetchMore();
+  };
+
+  return (
+    <RepositoryListContainer
+      repositories={repositories}
+      sort={sort}
+      setSort={setSort}
+      filter={filter}
+      setFilter={setFilter}
+      onEndReached={onEndReached}
+      navigate={navigate}
+    />
   );
 };
 

@@ -7,6 +7,7 @@ import { GET_USER } from "../../graphql/queries";
 import useAuthStorage from "../../hooks/useAuthStorage";
 import theme from "../../theme";
 import AppBarTab from "./AppBarTab";
+import { useNavigate } from "react-router-native";
 
 const styles = StyleSheet.create({
   container: {
@@ -25,6 +26,7 @@ const AppBar = () => {
   const { data, loading } = useQuery(GET_USER);
   const apolloClient = useApolloClient();
   const authStorage = useAuthStorage();
+  const navigate = useNavigate();
 
   if (loading) {
     return null;
@@ -35,6 +37,7 @@ const AppBar = () => {
   const signOut = async () => {
     console.log("logging out...");
     await authStorage.removeAccessToken();
+    navigate("/");
     apolloClient.resetStore();
   };
 
@@ -42,13 +45,19 @@ const AppBar = () => {
     <View style={styles.container}>
       <ScrollView horizontal>
         <AppBarTab route={"/"}>Repositories</AppBarTab>
-        <AppBarTab>Create a review</AppBarTab>
         {data.me ? (
-          <AppBarTab route="#" logOut={signOut}>
-            Sign out
-          </AppBarTab>
+          <>
+            <AppBarTab route="/review">Create a review</AppBarTab>
+            <AppBarTab route="/myReviews">My reviews</AppBarTab>
+            <AppBarTab route="#" logOut={signOut}>
+              Sign out
+            </AppBarTab>
+          </>
         ) : (
-          <AppBarTab route={"/signin"}>Sign in</AppBarTab>
+          <>
+            <AppBarTab route={"/signin"}>Sign in</AppBarTab>
+            <AppBarTab route={"/signup"}>Sign up</AppBarTab>
+          </>
         )}
       </ScrollView>
 
